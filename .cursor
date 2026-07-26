@@ -1,0 +1,26 @@
+Act as an expert software developer. Please write a desktop GUI application for Windows/Mac (specify your OS) that schedules a computer shutdown.
+
+Tech Stack:
+Please write it in Python using Tkinter/PyQt (or change to Electron/Tauri if you prefer web technologies).
+
+Core Requirements:
+
+User Interface: Create a clean, modern, and user-friendly GUI.
+
+Time Input: Provide an input field for the user to specify the time until shutdown (e.g., input in minutes).
+
+Action Buttons:
+
+A "Start/Schedule" button to initiate the shutdown sequence.
+
+A "Cancel/Abort" button to stop a scheduled shutdown.
+
+Live Countdown: Once started, display a real-time countdown timer on the GUI showing exactly how much time is left (Format: HH:MM:SS).
+
+System Integration: Use the appropriate OS-level commands to trigger the actual shutdown.
+
+Pre-Shutdown Alert (New): When the countdown reaches exactly 5 minutes (300 seconds) remaining, trigger a clear warning alert (either an OS-level notification or a prominent modal/popup within the app) informing the user that the computer is about to shut down. Include a quick "Cancel Shutdown" button directly inside or alongside this warning.
+
+Error Handling: Ensure the app handles invalid inputs (e.g., entering text instead of numbers) gracefully with a warning message.
+
+Please provide the complete, runnable code in a single block if possible, along with step-by-step instructions on how to install any necessary dependencies and run the program.

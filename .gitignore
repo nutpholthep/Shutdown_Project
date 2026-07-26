@@ -1,0 +1,29 @@
+# ─── Python Bytecode & Caches ──────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ─── PyInstaller Build & Executables ────────────────────────
+build/
+dist/
+*.manifest
+*.spec.bak
+
+# ─── Environment & Dependencies ────────────────────────────
+venv/
+env/
+ENV/
+.venv/
+
+# ─── IDE & Editor Caches ───────────────────────────────────
+.vscode/
+.idea/
+.cursor/
+*.swp
+*.swo
+
+# ─── OS System & Log Files ──────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
