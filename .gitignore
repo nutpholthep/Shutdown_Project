@@ -8,6 +8,7 @@ build/
 dist/
 *.manifest
 *.spec.bak
+.cursor/
 
 # ─── Environment & Dependencies ────────────────────────────
 venv/
