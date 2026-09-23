@@ -16,6 +16,14 @@ Write-Host "========================================================" -Foregroun
 Write-Host "  Shutdown Scheduler - Build & Anti-SmartBlock Pipeline  " -ForegroundColor Yellow
 Write-Host "========================================================" -ForegroundColor Cyan
 
+# Ensure no existing instance is running and locking the executable
+$runningProcesses = Get-Process -Name "ShutdownScheduler*" -ErrorAction SilentlyContinue
+if ($runningProcesses) {
+    Write-Host "Closing running instance(s) of ShutdownScheduler..." -ForegroundColor Yellow
+    $runningProcesses | Stop-Process -Force -ErrorAction SilentlyContinue
+    Start-Sleep -Milliseconds 800
+}
+
 # Step 1: Generate Assets (Icon & Version Info)
 Write-Host "`n[1/5] Generating Application Assets & Version Info..." -ForegroundColor Green
 python generate_assets.py

@@ -577,7 +577,7 @@ class ShutdownSchedulerApp(ctk.CTk):
 
         self._lang_btn_th = ctk.CTkButton(
             lang_card,
-            text="ไทย (TH)",
+            text="TH",
             height=26,
             font=ctk.CTkFont(family=FONT_FAMILY, size=11, weight="bold"),
             corner_radius=4,
@@ -590,7 +590,7 @@ class ShutdownSchedulerApp(ctk.CTk):
 
         self._lang_btn_en = ctk.CTkButton(
             lang_card,
-            text="English",
+            text="EN",
             height=26,
             font=ctk.CTkFont(family=FONT_FAMILY, size=11, weight="bold"),
             corner_radius=4,
