@@ -1,12 +1,21 @@
 # -*- mode: python ; coding: utf-8 -*-
+from PyInstaller.utils.hooks import collect_all
 
+datas = []
+binaries = []
+hiddenimports = ['pystray', 'pystray._win32', 'PIL', 'PIL._imagingtk', 'PIL._tkinter_finder']
+
+ctk_datas, ctk_binaries, ctk_hiddenimports = collect_all('customtkinter')
+datas += ctk_datas
+binaries += ctk_binaries
+hiddenimports += ctk_hiddenimports
 
 a = Analysis(
     ['shutdown_scheduler.py'],
     pathex=[],
-    binaries=[],
-    datas=[],
-    hiddenimports=['pystray', 'pystray._win32', 'PIL', 'PIL._imagingtk', 'PIL._tkinter_finder'],
+    binaries=binaries,
+    datas=datas,
+    hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -26,7 +35,7 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    upx=False,
     upx_exclude=[],
     runtime_tmpdir=None,
     console=False,
@@ -35,4 +44,8 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon='app_icon.ico',
+    version='file_version_info.txt',
+    uac_admin=False,
 )
+
