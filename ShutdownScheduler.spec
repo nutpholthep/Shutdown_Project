@@ -1,7 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
 from PyInstaller.utils.hooks import collect_all
 
-datas = []
+datas = [('app_icon.ico', '.')]
 binaries = []
 hiddenimports = ['pystray', 'pystray._win32', 'PIL', 'PIL._imagingtk', 'PIL._tkinter_finder']
 
