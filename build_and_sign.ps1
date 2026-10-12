@@ -24,16 +24,74 @@ if ($runningProcesses) {
     Start-Sleep -Milliseconds 800
 }
 
+# Resolve working Python executable (bypasses Windows Store App Execution Alias stub)
+function Get-PythonExecutable {
+    if ($env:VIRTUAL_ENV) {
+        $venvPy = Join-Path $env:VIRTUAL_ENV "Scripts\python.exe"
+        if (Test-Path $venvPy) { return $venvPy }
+    }
+    $localVenv = Join-Path $ScriptDir ".venv\Scripts\python.exe"
+    if (Test-Path $localVenv) { return $localVenv }
+
+    $pathPythons = Get-Command python.exe -All -ErrorAction SilentlyContinue |
+        Where-Object { $_.Source -notlike "*\Microsoft\WindowsApps\*" -and (Test-Path $_.Source) }
+    foreach ($cmd in $pathPythons) {
+        try {
+            $ver = & $cmd.Source -c "import sys; print(sys.executable)" 2>$null
+            if ($LASTEXITCODE -eq 0 -and $ver) { return $cmd.Source }
+        } catch {}
+    }
+
+    $pyLauncher = Get-Command py.exe -ErrorAction SilentlyContinue
+    if ($pyLauncher) {
+        try {
+            $resolvedPath = & $pyLauncher.Source -c "import sys; print(sys.executable)" 2>$null
+            if ($LASTEXITCODE -eq 0 -and $resolvedPath -and (Test-Path $resolvedPath.Trim())) {
+                return $resolvedPath.Trim()
+            }
+        } catch {}
+    }
+
+    $searchPatterns = @(
+        "$env:LOCALAPPDATA\Python\bin\python.exe",
+        "$env:LOCALAPPDATA\Python\pythoncore-*\python.exe",
+        "$env:LOCALAPPDATA\Programs\Python\Python*\python.exe",
+        "C:\Python*\python.exe",
+        "C:\Program Files\Python*\python.exe"
+    )
+    foreach ($pattern in $searchPatterns) {
+        $found = Get-Item $pattern -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+        if ($found -and (Test-Path $found.FullName)) {
+            return $found.FullName
+        }
+    }
+
+    return $null
+}
+
+$PythonExe = Get-PythonExecutable
+if (-not $PythonExe) {
+    Write-Error "Python installation not found. Please install Python or disable the Microsoft Store App Execution Alias."
+}
+Write-Host "Using Python: $PythonExe" -ForegroundColor Gray
+
+# Verify required build dependencies
+& $PythonExe -c "import PIL, customtkinter, pystray, PyInstaller" 2>$null
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Installing missing build dependencies..." -ForegroundColor Yellow
+    & $PythonExe -m pip install -r requirements.txt pyinstaller
+}
+
 # Step 1: Generate Assets (Icon & Version Info)
 Write-Host "`n[1/5] Generating Application Assets & Version Info..." -ForegroundColor Green
-python generate_assets.py
+& $PythonExe generate_assets.py
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Failed to generate assets."
 }
 
 # Step 2: Build with PyInstaller
 Write-Host "`n[2/5] Building Executable with PyInstaller (UPX Disabled)..." -ForegroundColor Green
-python -m PyInstaller ShutdownScheduler.spec --noconfirm --clean
+& $PythonExe -m PyInstaller ShutdownScheduler.spec --noconfirm --clean
 if ($LASTEXITCODE -ne 0) {
     Write-Error "PyInstaller build failed."
 }
